@@ -1,7 +1,7 @@
 # Sistem-Rekomendasi-Restoran
 Menggunakan bahasa CLIPS
 
-Group of Member: 
+Group Member: 
 1. Lathifah Nurrahmah
 2. Bethea Zia Davida
 3. Annisa Muzdalifa
