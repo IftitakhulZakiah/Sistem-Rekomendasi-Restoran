@@ -14,6 +14,7 @@
 	(slot count (type INTEGER) (default 0))
 	(slot rank (type INTEGER) (default 0))
 	(slot kategori (type STRING))
+	(slot distance (type FLOAT))
 )
 
 (deftemplate user-preference
