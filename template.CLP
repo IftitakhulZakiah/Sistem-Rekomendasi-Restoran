@@ -6,7 +6,7 @@
   (slot dresscode (type STRING))
   (slot hasWifi (type STRING))
   (slot latitude (type FLOAT))
-  (slot longtitude (type FLOAT))
+  (slot longitude (type FLOAT))
 )
 
 (deftemplate rekomendasi
@@ -26,5 +26,5 @@
   (slot dresscode (type STRING) (default "casual"))
   (slot hasWifi (type STRING) (default "yes"))
   (slot latitude (type FLOAT) (default 0.0))
-  (slot longtitude (type FLOAT) (default 0.0))
+  (slot longitude (type FLOAT) (default 0.0))
 )
