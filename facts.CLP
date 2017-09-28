@@ -1,4 +1,4 @@
-(deffacts MAIN::restoran
+(deffacts restoran
   (restoran (nama "Restoran A") (isSmoker "True") (budgetMin 1000) (budgetMaks 2000) (dresscode "casual") (hasWifi "True") (latitude -6.8922186) (longtitude 107.5886173))
   (restoran (nama "Restoran B") (isSmoker "False") (budgetMin 1200) (budgetMaks 2500) (dresscode "informal") (hasWifi "True") (latitude -6.224085) (longtitude 106.7859815))
   (restoran (nama "Restoran C") (isSmoker "True") (budgetMin 2000) (budgetMaks 4000) (dresscode "formal") (hasWifi "False") (latitude -6.2145285) (longtitude 106.8642591))
@@ -10,3 +10,16 @@
   (restoran (nama "Restoran I") (isSmoker "False") (budgetMin 750) (budgetMaks 2200) (dresscode "informal,casual") (hasWifi "True") (latitude -6.9586985) (longtitude 107.7092281))
   (restoran (nama "Restoran J") (isSmoker "False") (budgetMin 1500) (budgetMaks 2000) (dresscode "casual") (hasWifi "True") (latitude -6.2769732) (longtitude 106.775133))
 ) 
+
+(deffacts rekomendasi
+  (rekomendasi (nama "Restoran A") (count 0) (rank 10) (kategori "") (distance 0.0) (printed "no"))
+  (rekomendasi (nama "Restoran B") (count 0) (rank 10) (kategori "") (distance 0.0) (printed "no"))
+  (rekomendasi (nama "Restoran C") (count 0) (rank 10) (kategori "") (distance 0.0) (printed "no"))
+  (rekomendasi (nama "Restoran D") (count 0) (rank 10) (kategori "") (distance 0.0) (printed "no"))
+  (rekomendasi (nama "Restoran E") (count 0) (rank 10) (kategori "") (distance 0.0) (printed "no"))
+  (rekomendasi (nama "Restoran F") (count 0) (rank 10) (kategori "") (distance 0.0) (printed "no"))
+  (rekomendasi (nama "Restoran G") (count 0) (rank 10) (kategori "") (distance 0.0) (printed "no"))
+  (rekomendasi (nama "Restoran H") (count 0) (rank 10) (kategori "") (distance 0.0) (printed "no"))
+  (rekomendasi (nama "Restoran I") (count 0) (rank 10) (kategori "") (distance 0.0) (printed "no"))
+  (rekomendasi (nama "Restoran J") (count 0) (rank 10) (kategori "") (distance 0.0) (printed "no"))
+)

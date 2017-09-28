@@ -11,10 +11,11 @@
 
 (deftemplate rekomendasi
 	(slot nama (type STRING))
-	(slot count (type INTEGER) (default 0))
-	(slot rank (type INTEGER) (default 0))
+	(slot count (type INTEGER))
+	(slot rank (type INTEGER))
 	(slot kategori (type STRING))
 	(slot distance (type FLOAT))
+	(slot printed (type STRING))
 )
 
 (deftemplate user-preference
