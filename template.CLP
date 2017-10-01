@@ -16,6 +16,7 @@
 	(slot kategori (type STRING))
 	(slot distance (type FLOAT))
 	(slot printed (type STRING))
+	(slot checked (type INTEGER))
 )
 
 (deftemplate user-preference
