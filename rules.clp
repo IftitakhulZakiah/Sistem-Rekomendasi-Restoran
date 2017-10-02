@@ -136,7 +136,7 @@
 )
 
 :modify distance
-(defrule modify-distance
+(defrule mdfy-distance
   ?calc <- (calculate-distance "done")
   ?rek <- (rekomendasi (nama ?nama) (distance 0.0))
   ?mdf <- (modify-distance ?nama)
