@@ -123,21 +123,28 @@
   (retract ?wifipoin)
 )
 
-(defrule euclidean-distance
+;Calculating euclidean distance
+(defrule calc-distance
   (restoran (nama ?nama) (longitude ?x2) (latitude ?y2))
   (rekomendasi (nama ?nama) (distance 0.0))
   (user-preference (longitude ?x1) (latitude ?y1))
   =>
+  (printout t ?nama crlf)
   (assert (calculate-distance "done"))
   (assert (jarak (sqrt(+ (** (- ?x1 ?x2) 2) (** (- ?y1 ?y2) 2)))))
+  (assert (modify-distance ?nama))
 )
 
+:modify distance
 (defrule modify-distance
   ?calc <- (calculate-distance "done")
-  ?rek <- (rekomendasi (nama ?nama) (distance ?d1))
+  ?rek <- (rekomendasi (nama ?nama) (distance 0.0))
+  ?mdf <- (modify-distance ?nama)
   ?dist <- (jarak ?d)
   =>
   (modify ?rek (distance ?d))
+  (printout t ?nama " " ?d crlf)
+  (retract ?mdf)
   (retract ?calc)
   (retract ?dist)
 )
