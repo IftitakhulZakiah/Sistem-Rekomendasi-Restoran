@@ -1,23 +1,46 @@
 
 (defrule startup 
+  (declare (salience 10))
   =>
   (printout t "Welcome to our system. Where do you want to eat today?" crlf)
+  (printout t "For every question, type x for default answer" crlf)
   (printout t "What is your name?" crlf)
     (bind ?uname (read))
   (printout t "Do you smoke? (yes or no)" crlf)
-    (bind ?smoke (read))
+    (bind ?smoke (readline))
+    (if (= (str-compare ?smoke "") 0)
+    then
+    (bind ?smoke "no"))
   (printout t "What is your minimum budget? (0-9999)" crlf)
-    (bind ?minbud (read))
+    (bind ?minbud (readline))
+    (if (= (str-compare ?minbud "") 0)
+    then
+    (bind ?minbud 400))
   (printout t "What is your maximum budget? (0-9999)" crlf)
-    (bind ?maxbud (read))
+    (bind ?maxbud (readline))
+    (if (= (str-compare ?maxbud "") 0)
+    then
+    (bind ?maxbud 1000))
   (printout t "What clothes are you wearing? (casual, informal, formal)" crlf)
-    (bind ?cloth (read))
+    (bind ?cloth (readline))
+    (if (= (str-compare ?cloth "") 0)
+    then
+    (bind ?cloth "casual"))
   (printout t "Do you want restaurant with Wi-Fi? (yes or no)" crlf)
-    (bind ?wifi (read))
+    (bind ?wifi (readline))
+    (if (= (str-compare ?wifi "") 0)
+    then
+    (bind ?wifi "yes"))
   (printout t "What are your latitude coordinate?" crlf)
-    (bind ?lat (read))
+    (bind ?lat (readline))
+    (if (= (str-compare ?lat "") 0)
+    then
+    (bind ?lat 0.0))
   (printout t "What are your longitude coordinate?" crlf)  
-    (bind ?long (read))
+    (bind ?long (readline))
+    (if (= (str-compare ?long "") 0)
+    then
+    (bind ?long 0.0))
   (assert (user-preference (user-name ?uname) (isSmoker (lowcase ?smoke)) (budgetMin ?minbud) 
   (budgetMaks ?maxbud) (dresscode (lowcase ?cloth)) (hasWifi (lowcase ?wifi)) (latitude ?lat) (longitude ?long)))
 )
