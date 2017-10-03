@@ -12,7 +12,6 @@
 (deftemplate rekomendasi
 	(slot nama (type STRING))
 	(slot count (type INTEGER))
-	(slot rank (type INTEGER))
 	(slot kategori (type STRING))
 	(slot distance (type FLOAT))
 	(slot printed (type STRING))
