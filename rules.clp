@@ -165,7 +165,7 @@
   ?mdf <- (modify-distance ?nama)
   ?dist <- (jarak ?d)
   =>
-  (modify ?rek (distance ?d))
+  (modify ?rek (distance ?d)(checked 6))
   (retract ?mdf)
   (retract ?cek)
   (retract ?calc)
@@ -175,22 +175,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;kategori
 
 (defrule add-category
-  ?rek <- (rekomendasi (nama ?nama) (count ?c) (kategori "") (distance ?d) (printed ?p) (checked 5))
+  ?rek <- (rekomendasi (nama ?nama) (count ?c) (kategori "") (distance ?d) (printed ?p) (checked 6))
   =>
   (retract ?rek)
   (if (eq ?c 4) then
-    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "very recommendable") (distance ?d) (printed ?p) (checked 5))))
+    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "very recommendable") (distance ?d) (printed ?p) (checked 7))))
   (if (or (eq ?c 3) (eq ?c 2)) then
-    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "recommendable") (distance ?d) (printed ?p) (checked 5))))
+    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "recommendable") (distance ?d) (printed ?p) (checked 7))))
   (if (or (eq ?c 1) (eq ?c 0)) then
-    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "not recommendable") (distance ?d) (printed ?p) (checked 5)))
+    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "not recommendable") (distance ?d) (printed ?p) (checked 7)))
   )
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;print output
 (defrule find-very-recommendable
    (declare(salience 100))
-   (rekomendasi (nama ?nama1)(kategori "very recommendable")(distance ?dist1)(checked 5))
+   (not (rekomendasi (checked ?cek&:(< ?cek 7))))
+   (rekomendasi (nama ?nama1)(kategori "very recommendable")(distance ?dist1)(checked 7))
    (not (rekomendasi (kategori "very recommendable")(distance ?dist2&:(< ?dist2 ?dist1))))
    ?f1 <- (rekomendasi (nama ?nama1) (count ?count1)(kategori "very recommendable")(distance ?dist1)(printed ?printed1))
    ?var <- (total-print ?printx&:(< ?printx 3))
@@ -203,7 +204,8 @@
    
 (defrule find-recommendable
    (declare(salience 50))
-   (rekomendasi (nama ?nama1)(kategori "recommendable")(distance ?dist1)(checked 5))
+   (not (rekomendasi (checked ?cek&:(< ?cek 7))))
+   (rekomendasi (nama ?nama1)(kategori "recommendable")(distance ?dist1)(checked 7))
    (not (rekomendasi (kategori "recommendable")(distance ?dist2&:(< ?dist2 ?dist1))))
    ?f1 <- (rekomendasi (nama ?nama1) (count ?count1)(kategori "recommendable")(distance ?dist1)(printed ?printed1))
    ?var <- (total-print ?printx&:(< ?printx 3))
@@ -216,7 +218,8 @@
    
 (defrule find-not-recommendable
    (declare(salience 25))
-   (rekomendasi (nama ?nama1)(kategori "not recommendable")(distance ?dist1)(checked 5))
+   (not (rekomendasi (checked ?cek&:(< ?cek 7))))
+   (rekomendasi (nama ?nama1)(kategori "not recommendable")(distance ?dist1)(checked 7))
    (not (rekomendasi (kategori "not recommendable")(distance ?dist2&:(< ?dist2 ?dist1))))
    ?f1 <- (rekomendasi (nama ?nama1) (count ?count1)(kategori "not recommendable")(distance ?dist1)(printed ?printed1))
    ?var <- (total-print ?printx&:(< ?printx 3))
