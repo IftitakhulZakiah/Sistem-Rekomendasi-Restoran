@@ -148,23 +148,27 @@
 ;Calculating euclidean distance
 (defrule calc-distance
   (restoran (nama ?nama) (longitude ?x2) (latitude ?y2))
-  (rekomendasi (nama ?nama) (distance 0.0))
+  ?rek <- (rekomendasi (nama ?nama) (checked 4))
   (user-preference (longitude ?x1) (latitude ?y1))
   =>
   (assert (calculate-distance "done"))
   (assert (jarak (sqrt(+ (** (- ?x1 ?x2) 2) (** (- ?y1 ?y2) 2)))))
   (assert (modify-distance ?nama))
+  (modify ?rek (checked 5))
+  (assert (last-check "done"))
 )
 
 ;modify distance
 (defrule mdfy-distance
   ?calc <- (calculate-distance "done")
-  ?rek <- (rekomendasi (nama ?nama) (distance 0.0))
+  ?cek <- (last-check "done")
+  ?rek <- (rekomendasi (nama ?nama))
   ?mdf <- (modify-distance ?nama)
   ?dist <- (jarak ?d)
   =>
   (modify ?rek (distance ?d))
   (retract ?mdf)
+  (retract ?cek)
   (retract ?calc)
   (retract ?dist)
 )
@@ -172,23 +176,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;kategori
 
 (defrule add-category
-  ?rek <- (rekomendasi (nama ?nama) (count ?c) (kategori "") (distance ?d) (printed ?p) (checked 4))
+  ?rek <- (rekomendasi (nama ?nama) (count ?c) (kategori "") (distance ?d) (printed ?p) (checked 5))
   =>
   (retract ?rek)
   (if (eq ?c 4) then
-    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "very recommendable") (distance ?d) (printed ?p) (checked 4))))
+    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "very recommendable") (distance ?d) (printed ?p) (checked 5))))
   (if (or (eq ?c 3) (eq ?c 2)) then
-    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "recommendable") (distance ?d) (printed ?p) (checked 4))))
+    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "recommendable") (distance ?d) (printed ?p) (checked 5))))
   (if (or (eq ?c 1) (eq ?c 0)) then
-    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "not recommendable") (distance ?d) (printed ?p) (checked 4)))
+    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "not recommendable") (distance ?d) (printed ?p) (checked 5)))
   )
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;print output
 (defrule find-very-recommendable
    (declare(salience 100))
-   (not (rekomendasi (distance 0.0)))
-   (rekomendasi (nama ?nama1)(kategori "very recommendable")(distance ?dist1))
+   (rekomendasi (nama ?nama1)(kategori "very recommendable")(distance ?dist1)(checked 5))
    (not (rekomendasi (kategori "very recommendable")(distance ?dist2&:(< ?dist2 ?dist1))))
    ?f1 <- (rekomendasi (nama ?nama1) (count ?count1)(kategori "very recommendable")(distance ?dist1)(printed ?printed1))
    ?var <- (total-print ?printx&:(< ?printx 3))
@@ -201,8 +204,7 @@
    
 (defrule find-recommendable
    (declare(salience 50))
-   (not (rekomendasi (distance 0.0)))
-   (rekomendasi (nama ?nama1)(kategori "recommendable")(distance ?dist1))
+   (rekomendasi (nama ?nama1)(kategori "recommendable")(distance ?dist1)(checked 5))
    (not (rekomendasi (kategori "recommendable")(distance ?dist2&:(< ?dist2 ?dist1))))
    ?f1 <- (rekomendasi (nama ?nama1) (count ?count1)(kategori "recommendable")(distance ?dist1)(printed ?printed1))
    ?var <- (total-print ?printx&:(< ?printx 3))
@@ -215,192 +217,7 @@
    
 (defrule find-not-recommendable
    (declare(salience 25))
-   (not (rekomendasi (distance 0.0)))
-   (rekomendasi (nama ?nama1)(kategori "not recommendable")(distance ?dist1))
-   (not (rekomendasi (kategori "not recommendable")(distance ?dist2&:(< ?dist2 ?dist1))))
-   ?f1 <- (rekomendasi (nama ?nama1) (count ?count1)(kategori "not recommendable")(distance ?dist1)(printed ?printed1))
-   ?var <- (total-print ?printx&:(< ?printx 3))
-   =>
-   (printout t ?nama1 " ("?dist1 ") not recommendable" crlf)
-   (retract ?f1)
-   (retract ?var)
-   (assert (total-print (+ ?printx 1)))
-)
-
-;Matching smoker
-(defrule smoking-match
-  (user-preference (isSmoker ?smoker1))
-  ?rek <- (rekomendasi (nama ?nama1) (count ?c1) (checked 0))
-  (restoran (nama ?nama2) (isSmoker ?smoker2))
-  =>
-  (if (= (str-compare ?nama1 ?nama2) 0)
-  then
-    (modify ?rek (checked 1))
-    (if (= (str-compare ?smoker1 ?smoker2) 0)
-    then
-      (assert (add-smoker-poin "add"))
-    )
-  )
-)
-
-;Add smoker poin
-(defrule add-smoker-poin
-  ?smokerpoin <- (add-smoker-poin "add")
-  ?rek <- (rekomendasi (nama ?nama1) (count ?c1))
-  =>
-  (modify ?rek (count (+ ?c1 1)))
-  (retract ?smokerpoin)
-)
-
-
-;Matching budget
-(defrule budget-match
-  (user-preference (budgetMin ?min1) (budgetMaks ?maks1))
-  ?rek <- (rekomendasi (nama ?nama1) (count ?c1) (checked 1))
-  (restoran (nama ?nama2) (budgetMin ?min2) (budgetMaks ?maks2))
-  =>
-  (if (= (str-compare ?nama1 ?nama2) 0)
-  then
-    (modify ?rek (checked 2))
-    (if (and (<= ?min1 ?maks2) (>= ?maks1 ?min2))
-    then
-      (assert (add-budget-poin "add"))
-    )
-  )
-)
-
-;Add budget poin
-(defrule add-budget-poin
-  ?budgetpoin <- (add-budget-poin "add")
-  ?rek <- (rekomendasi (nama ?nama1) (count ?c1))
-  =>
-  (modify ?rek (count (+ ?c1 1)))
-  (retract ?budgetpoin)
-)
-
-
-;Matching Dresscode
-(defrule dresscode-match
-  (user-preference (dresscode ?dc1))
-  ?rek <- (rekomendasi (nama ?nama1) (count ?c1) (checked 2))
-  (restoran (nama ?nama2) (dresscode ?dc2))
-  =>
-  (if (= (str-compare ?nama1 ?nama2) 0)
-  then
-    (modify ?rek (checked 3))
-    (if (= (str-compare ?dc1 ?dc2) 0)
-    then
-      (assert (add-dresscode-poin "add"))
-    )
-  )
-)
-
-;Add dresscode poin
-(defrule add-dresscode-poin
-  ?dcpoin <- (add-dresscode-poin "add")
-  ?rek <- (rekomendasi (nama ?nama1) (count ?c1))
-  =>
-  (modify ?rek (count (+ ?c1 1)))
-  (retract ?dcpoin)
-)
-
-;Matching Wifi
-(defrule wifi-match
- (user-preference (hasWifi ?wifi1))
-  ?rek <- (rekomendasi (nama ?nama1) (count ?c1) (checked 3))
-  (restoran (nama ?nama2) (hasWifi ?wifi2))
-  =>
-  (if (= (str-compare ?nama1 ?nama2) 0)
-  then
-    (modify ?rek (checked 4))
-   (if (= (str-compare ?wifi1 ?wifi2) 0)
-    then
-      (assert (add-wifi-poin "add"))
-    )
-  )
-)
-
-;Add wifi poin
-(defrule add-wifi-poin
-  ?wifipoin <- (add-wifi-poin "add")
-  ?rek <- (rekomendasi (nama ?nama1) (count ?c1))
-  =>
- (modify ?rek (count (+ ?c1 1)))
-  (retract ?wifipoin)
-)
-
-;Calculating euclidean distance
-(defrule calc-distance
-  (restoran (nama ?nama) (longitude ?x2) (latitude ?y2))
-  (rekomendasi (nama ?nama) (distance 0.0))
-  (user-preference (longitude ?x1) (latitude ?y1))
-  =>
-  (assert (calculate-distance "done"))
-  (assert (jarak (sqrt(+ (** (- ?x1 ?x2) 2) (** (- ?y1 ?y2) 2)))))
-  (assert (modify-distance ?nama))
-)
-
-;modify distance
-(defrule mdfy-distance
-  ?calc <- (calculate-distance "done")
-  ?rek <- (rekomendasi (nama ?nama) (distance 0.0))
-  ?mdf <- (modify-distance ?nama)
-  ?dist <- (jarak ?d)
-  =>
-  (modify ?rek (distance ?d))
-  (retract ?mdf)
-  (retract ?calc)
-  (retract ?dist)
-)
-
-;;;;;;;;;;;;;;;;;;;;;;;kategori
-
-(defrule add-category
-  ?rek <- (rekomendasi (nama ?nama) (count ?c) (kategori "") (distance ?d) (printed ?p) (checked 4))
-  =>
-  (retract ?rek)
-  (if (eq ?c 4) then
-    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "very recommendable") (distance ?d) (printed ?p) (checked 4))))
-  (if (or (eq ?c 3) (eq ?c 2)) then
-    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "recommendable") (distance ?d) (printed ?p) (checked 4))))
-  (if (or (eq ?c 1) (eq ?c 0)) then
-    (assert (rekomendasi (nama ?nama) (count ?c) (kategori "not recommendable") (distance ?d) (printed ?p) (checked 4)))
-  )
-)
-
-;;;;;;;;;;;;;;;;;;;;;;print output
-(defrule find-very-recommendable
-   (declare(salience 100))
-   (not (rekomendasi (distance 0.0)))
-   (rekomendasi (nama ?nama1)(kategori "very recommendable")(distance ?dist1))
-   (not (rekomendasi (kategori "very recommendable")(distance ?dist2&:(< ?dist2 ?dist1))))
-   ?f1 <- (rekomendasi (nama ?nama1) (count ?count1)(kategori "very recommendable")(distance ?dist1)(printed ?printed1))
-   ?var <- (total-print ?printx&:(< ?printx 3))
-   =>
-   (printout t ?nama1 " ("?dist1 ") very recommendable" crlf)
-   (retract ?f1)
-   (retract ?var)
-   (assert (total-print (+ ?printx 1)))
-)
-   
-(defrule find-recommendable
-   (declare(salience 50))
-   (not (rekomendasi (distance 0.0)))
-   (rekomendasi (nama ?nama1)(kategori "recommendable")(distance ?dist1))
-   (not (rekomendasi (kategori "recommendable")(distance ?dist2&:(< ?dist2 ?dist1))))
-   ?f1 <- (rekomendasi (nama ?nama1) (count ?count1)(kategori "recommendable")(distance ?dist1)(printed ?printed1))
-   ?var <- (total-print ?printx&:(< ?printx 3))
-   =>
-   (printout t ?nama1 " ("?dist1 ") recommendable" crlf)
-   (retract ?f1)
-   (retract ?var)
-   (assert (total-print (+ ?printx 1)))
-)
-   
-(defrule find-not-recommendable
-   (declare(salience 25))
-   (not (rekomendasi (distance 0.0)))
-   (rekomendasi (nama ?nama1)(kategori "not recommendable")(distance ?dist1))
+   (rekomendasi (nama ?nama1)(kategori "not recommendable")(distance ?dist1)(checked 5))
    (not (rekomendasi (kategori "not recommendable")(distance ?dist2&:(< ?dist2 ?dist1))))
    ?f1 <- (rekomendasi (nama ?nama1) (count ?count1)(kategori "not recommendable")(distance ?dist1)(printed ?printed1))
    ?var <- (total-print ?printx&:(< ?printx 3))
