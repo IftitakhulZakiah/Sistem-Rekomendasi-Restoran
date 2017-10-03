@@ -1,7 +1,6 @@
 (defrule startup 
   =>
   (printout t "Welcome to our system. Where do you want to eat today?" crlf)
-  (printout t "For every question, type x for default answer" crlf)
   (printout t "What is your name?" crlf)
     (bind ?uname (read))
   (printout t "Do you smoke? (yes or no)" crlf)
@@ -10,13 +9,13 @@
     then
     (bind ?smoke "no"))
   (printout t "What is your minimum budget? (0-9999)" crlf)
-    (bind ?minbud (readline))
-    (if (= (str-compare ?minbud "") 0)
+    (bind ?minbud (read))
+    (if (or (stringp ?minbud) (symbolp ?minbud))
     then
     (bind ?minbud 400))
   (printout t "What is your maximum budget? (0-9999)" crlf)
-    (bind ?maxbud (readline))
-    (if (= (str-compare ?maxbud "") 0)
+    (bind ?maxbud (read))
+    (if (or (stringp ?maxbud) (symbolp ?maxbud))
     then
     (bind ?maxbud 1000))
   (printout t "What clothes are you wearing? (casual, informal, formal)" crlf)
@@ -30,13 +29,13 @@
     then
     (bind ?wifi "yes"))
   (printout t "What are your latitude coordinate?" crlf)
-    (bind ?lat (readline))
-    (if (= (str-compare ?lat "") 0)
+    (bind ?lat (read))
+    (if (or (stringp ?lat) (symbolp ?lat))
     then
     (bind ?lat 0.0))
   (printout t "What are your longitude coordinate?" crlf)  
-    (bind ?long (readline))
-    (if (= (str-compare ?long "") 0)
+    (bind ?long (read))
+    (if (or (stringp ?long) (symbolp ?long))
     then
     (bind ?long 0.0))
   (assert (user-preference (user-name ?uname) (isSmoker (lowcase ?smoke)) (budgetMin ?minbud) 
