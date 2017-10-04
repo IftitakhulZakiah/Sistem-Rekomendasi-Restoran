@@ -98,12 +98,12 @@
 (defrule dresscode-match
   (user-preference (dresscode ?dc1))
   ?rek <- (rekomendasi (nama ?nama1) (count ?c1) (checked 2))
-  (restoran (nama ?nama2) (dresscode ?dc2))
+  (restoran (nama ?nama2) (dresscode $?dc2))
   =>
   (if (= (str-compare ?nama1 ?nama2) 0)
   then
     (modify ?rek (checked 3))
-    (if (= (str-compare ?dc1 ?dc2) 0)
+    (if (member$ ?dc1 $?dc2)
     then
       (assert (add-dresscode-poin "add"))
     )

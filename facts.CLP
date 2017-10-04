@@ -3,7 +3,7 @@
   (restoran (nama "Restoran B") (isSmoker "no") (budgetMin 1200) (budgetMaks 2500) (dresscode "informal") (hasWifi "yes") (latitude -6.224085) (longitude 106.7859815))
   (restoran (nama "Restoran C") (isSmoker "yes") (budgetMin 2000) (budgetMaks 4000) (dresscode "formal") (hasWifi "no") (latitude -6.2145285) (longitude 106.8642591))
   (restoran (nama "Restoran D") (isSmoker "no") (budgetMin 500) (budgetMaks 1400) (dresscode "formal") (hasWifi "no") (latitude -6.9005363) (longitude 107.6222191))
-  (restoran (nama "Restoran E") (isSmoker "yes") (budgetMin 1000) (budgetMaks 2000) (dresscode "informal,casual") (hasWifi "yes") (latitude -6.2055617) (longitude 106.8001597))
+  (restoran (nama "Restoran E") (isSmoker "yes") (budgetMin 1000) (budgetMaks 2000) (dresscode "informal" "casual") (hasWifi "yes") (latitude -6.2055617) (longitude 106.8001597))
   (restoran (nama "Restoran F") (isSmoker "no") (budgetMin 2500) (budgetMaks 5000) (dresscode "informal") (hasWifi "yes") (latitude -6.9045679) (longitude 107.6399745))
   (restoran (nama "Restoran G") (isSmoker "yes") (budgetMin 1300) (budgetMaks 3000) (dresscode "casual") (hasWifi "yes") (latitude -6.1881082) (longitude 106.7844409))
   (restoran (nama "Restoran H") (isSmoker "no") (budgetMin 400) (budgetMaks 1000) (dresscode "informal") (hasWifi "no") (latitude -6.9525133) (longitude 107.6052906))

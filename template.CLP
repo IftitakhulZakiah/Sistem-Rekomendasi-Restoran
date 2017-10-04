@@ -3,7 +3,7 @@
   (slot isSmoker (type STRING))
   (slot budgetMin (type INTEGER))
   (slot budgetMaks (type INTEGER))
-  (slot dresscode (type STRING))
+  (multislot dresscode (type STRING))
   (slot hasWifi (type STRING))
   (slot latitude (type FLOAT))
   (slot longitude (type FLOAT))
